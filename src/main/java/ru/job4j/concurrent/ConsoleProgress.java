@@ -12,7 +12,7 @@ public class ConsoleProgress implements Runnable {
 				Arrays.stream(strings).forEach(string ->System.out.print("\r load: " + string));
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 	}
 	public static void main(String[] args) throws InterruptedException {
