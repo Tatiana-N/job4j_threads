@@ -41,15 +41,19 @@ public class Wget implements Runnable {
 	}
 	
 	public static void main(String[] args) throws InterruptedException {
-		if(Validation.check(args)) {
+		try {
+			Integer.parseInt(args[1]);
+			if (args.length != 3) {
+				throw new Exception();
+			}
+		} catch (Exception e) {
+			System.out.println("неправильные аргументы");
+		}
 			String url = args[0];
 			int speed = Integer.parseInt(args[1]);
 			String fileName = args[2];
 			Thread wget = new Thread(new Wget(url, speed, fileName));
 			wget.start();
 			wget.join();
-		} else {
-			System.out.println();
-		}
 	}
 }
