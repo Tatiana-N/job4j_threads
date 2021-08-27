@@ -3,9 +3,10 @@ package ru.job4j.concurrent;
 import java.util.Arrays;
 
 public class ConsoleProgress implements Runnable {
-	String [] strings = new String[]{"\\","|","/","-"};
+
 	@Override
 	public void run() {
+		String [] strings = new String[]{"\\","|","/","-"};
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				Thread.sleep(500);
