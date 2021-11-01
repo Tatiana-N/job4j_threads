@@ -18,11 +18,12 @@ public class UserCache {
 	public User findById(int id) {
 		return User.of(users.get(id).getName());
 	}
+	
 	public List<User> findAll() {
 		List<User> usersList = new ArrayList<>();
 		Enumeration<User> elements = users.elements();
-		while (elements.hasMoreElements()){
-		usersList.add(User.of(elements.nextElement().getName()));
+		while (elements.hasMoreElements()) {
+			usersList.add(User.of(elements.nextElement().getName()));
 		}
 		return usersList;
 	}

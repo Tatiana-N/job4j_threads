@@ -20,20 +20,20 @@ public class Wget implements Runnable {
 	
 	@Override
 	public void run() {
-		try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
-		     FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
+		try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream()); FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
 			byte[] dataBuffer = new byte[1024];
 			int bytesRead;
 			while (true) {
 				long timeStart = System.currentTimeMillis();
 				bytesRead = in.read(dataBuffer, 0, 1024);
-				if (bytesRead == -1){
+				if (bytesRead == -1) {
 					break;
 				}
 				fileOutputStream.write(dataBuffer, 0, bytesRead);
 				long time = System.currentTimeMillis() - timeStart;
-				if(time < speed)
-				Thread.sleep(speed - time);
+				if (time < speed) {
+					Thread.sleep(speed - time);
+				}
 			}
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
@@ -49,11 +49,11 @@ public class Wget implements Runnable {
 		} catch (Exception e) {
 			System.out.println("неправильные аргументы");
 		}
-			String url = args[0];
-			int speed = Integer.parseInt(args[1]);
-			String fileName = args[2];
-			Thread wget = new Thread(new Wget(url, speed, fileName));
-			wget.start();
-			wget.join();
+		String url = args[0];
+		int speed = Integer.parseInt(args[1]);
+		String fileName = args[2];
+		Thread wget = new Thread(new Wget(url, speed, fileName));
+		wget.start();
+		wget.join();
 	}
 }
