@@ -15,12 +15,9 @@ public class FileReader {
 		try (BufferedInputStream i = new BufferedInputStream(new FileInputStream(file))) {
 			StringBuilder output = new StringBuilder();
 			int data;
-			byte[] bytesBuffer = new byte[1024];
-			while ((data = i.read(bytesBuffer)) != -1) {
-				for (int i1 = 0; i1 < data; i1++) {
-					if (predicate.test(data)) {
-						output.append((char) data);
-					}
+			while ((data = i.read()) != -1) {
+				if (predicate.test(data)) {
+					output.append((char) data);
 				}
 			}
 			return output.toString();
