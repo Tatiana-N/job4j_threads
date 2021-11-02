@@ -29,7 +29,7 @@ class UserStorageTest {
 		storage.add(user1);
 		storage.add(user2);
 		storage.delete(user2);
-		Assertions.assertThrows(IllegalArgumentException.class, () -> storage.transfer(1, 2, 50));
+		Assertions.assertFalse( storage.transfer(1, 2, 50));
 	}
 	
 	@Test
