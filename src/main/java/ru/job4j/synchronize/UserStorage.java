@@ -8,33 +8,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ThreadSafe
-public class UserStorage {
+public final class UserStorage {
 	@GuardedBy("this")
-	Map<Integer, User> users = new HashMap<>();
+	private final Map<Integer, User> users = new HashMap<>();
 	
 	public synchronized boolean add(User user) {
-		User tempUser = User.of(user.getId(), user.getAmount());
-		return users.putIfAbsent(tempUser.getId(), tempUser) != null;
+		return users.putIfAbsent(user.getId(), user) == null;
 	}
 	
 	public synchronized boolean update(User user) {
-		User tempUser = User.of(user.getId(), user.getAmount());
-		return users.replace(tempUser.getId(), tempUser) != null;
+		return users.replace(user.getId(), user) != null;
 	}
 	
 	public synchronized boolean delete(User user) {
-		User tempUser = User.of(user.getId(), user.getAmount());
-		return users.remove(tempUser.getId()) != null;
+		return users.remove(user.getId()) != null;
 	}
 	
 	public synchronized boolean transfer(int fromId, int toId, int amount) {
 		User userFrom = users.get(fromId);
 		User userTo = users.get(toId);
-		if (userFrom == null || userTo == null) {
-			throw new IllegalArgumentException("Not found users");
-		}
-		if (userFrom.getAmount() - amount < 0) {
-			throw new IllegalArgumentException("Not Enough money");
+		if (userFrom == null || userTo == null || userFrom.getAmount() - amount < 0) {
+			return false;
 		}
 		User userFromNew = User.of(userFrom.getId(), userFrom.getAmount() - amount);
 		User userToNew = User.of(userTo.getId(), userTo.getAmount() + amount);
