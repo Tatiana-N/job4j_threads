@@ -34,8 +34,4 @@ public final class UserStorage {
 		User userToNew = User.of(userTo.getId(), userTo.getAmount() + amount);
 		return update(userFromNew) && update(userToNew);
 	}
-	
-	public synchronized Map<Integer, User> getUsers() {
-		return users;
-	}
 }
