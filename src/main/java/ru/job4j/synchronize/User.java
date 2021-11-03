@@ -11,6 +11,10 @@ public class User {
 		this.amount = amount;
 	}
 	
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+	
 	private User() {
 	}
 	

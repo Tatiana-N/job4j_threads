@@ -30,8 +30,8 @@ public final class UserStorage {
 		if (userFrom == null || userTo == null || userFrom.getAmount() - amount < 0) {
 			return false;
 		}
-		User userFromNew = User.of(userFrom.getId(), userFrom.getAmount() - amount);
-		User userToNew = User.of(userTo.getId(), userTo.getAmount() + amount);
-		return update(userFromNew) && update(userToNew);
+		userFrom.setAmount(userFrom.getAmount() - amount);
+		userTo.setAmount(userTo.getAmount() + amount);
+		return update(userFrom) && update(userTo);
 	}
 }
