@@ -32,6 +32,6 @@ public final class UserStorage {
 		}
 		userFrom.setAmount(userFrom.getAmount() - amount);
 		userTo.setAmount(userTo.getAmount() + amount);
-		return update(userFrom) && update(userTo);
+		return true;
 	}
 }
