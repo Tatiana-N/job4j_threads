@@ -52,8 +52,12 @@ class SimpleBlockingQueueTest {
 	void test() throws InterruptedException {
 		final CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
 		final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
+		List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < 10000 ; i++) {
+			list.add(i);
+		}
 		Thread producer = new Thread(() -> {
-			IntStream.range(0, 10).forEach(queue::offer);
+			IntStream.range(0, 10000).forEach(queue::offer);
 		});
 		producer.start();
 		Thread consumer = new Thread(() -> {
@@ -66,11 +70,12 @@ class SimpleBlockingQueueTest {
 				}
 			}
 		});
+	
 		consumer.start();
 		producer.join();
 		consumer.interrupt();
 		consumer.join();
-		Assertions.assertEquals(buffer, Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+		Assertions.assertEquals(buffer, list);
 		
 	}
 }
