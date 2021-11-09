@@ -30,7 +30,13 @@ class SimpleBlockingQueueTest {
 		List<Thread> threadList = new ArrayList<>();
 		for (int i = 0; i < 10000; i++) {
 			threadList.add(new Thread(() -> simpleBlockingQueue.offer(Math.random())));
-			threadList.add(new Thread(simpleBlockingQueue::poll));
+		 threadList.add(new Thread(() -> {
+			 try {
+				 simpleBlockingQueue.poll();
+			 } catch (InterruptedException e) {
+				 e.printStackTrace();
+			 }
+		 }));
 		}
 		threadList.forEach(Thread::start);
 		for (Thread thread : threadList) {
