@@ -19,7 +19,7 @@ public class SimpleBlockingQueue<T> {
 	}
 	
 	public synchronized T poll() throws InterruptedException {
-		while (size==0) {
+		while (size == 0) {
 			wait();
 			notifyAll();
 		}
@@ -28,6 +28,6 @@ public class SimpleBlockingQueue<T> {
 	}
 	
 	public synchronized boolean isEmpty() {
-		return size==0;
+		return size == 0;
 	}
 }
