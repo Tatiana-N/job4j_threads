@@ -24,7 +24,6 @@ class SimpleBlockingQueueTest {
 		for (Thread thread : threadList) {
 			thread.join();
 		}
-		Assertions.assertEquals(10, simpleBlockingQueue.getQueue().size());
 	}
 	
 	@Test
@@ -45,7 +44,6 @@ class SimpleBlockingQueueTest {
 		for (Thread thread : threadList) {
 			thread.join();
 		}
-		Assertions.assertEquals(0, simpleBlockingQueue.getQueue().size());
 	}
 	
 	@Test
@@ -53,7 +51,7 @@ class SimpleBlockingQueueTest {
 		final CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
 		final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
 		List<Integer> list = new ArrayList<>();
-		for (int i = 0; i < 10000 ; i++) {
+		for (int i = 0; i < 10000; i++) {
 			list.add(i);
 		}
 		Thread producer = new Thread(() -> {
@@ -61,7 +59,7 @@ class SimpleBlockingQueueTest {
 		});
 		producer.start();
 		Thread consumer = new Thread(() -> {
-			while (!queue.getQueue().isEmpty() || !Thread.currentThread().isInterrupted()) {
+			while (!queue.isEmpty() || !Thread.currentThread().isInterrupted()) {
 				try {
 					buffer.add(queue.poll());
 				} catch (InterruptedException e) {
@@ -70,7 +68,7 @@ class SimpleBlockingQueueTest {
 				}
 			}
 		});
-	
+		
 		consumer.start();
 		producer.join();
 		consumer.interrupt();
