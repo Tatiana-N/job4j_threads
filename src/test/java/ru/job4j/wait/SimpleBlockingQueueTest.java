@@ -14,10 +14,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimpleBlockingQueueTest {
 	@Test
 	void offer() throws InterruptedException {
-		SimpleBlockingQueue<Double> simpleBlockingQueue = new SimpleBlockingQueue<>();
+		SimpleBlockingQueue<Double> simpleBlockingQueue = new SimpleBlockingQueue<>(10);
 		List<Thread> threadList = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			threadList.add(new Thread(() -> simpleBlockingQueue.offer(Math.random())));
+			threadList.add(new Thread(() -> {
+				try {
+					simpleBlockingQueue.offer(Math.random());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}));
 		}
 		threadList.forEach(Thread::start);
 		
@@ -28,15 +35,23 @@ class SimpleBlockingQueueTest {
 	
 	@Test
 	void poll() throws InterruptedException {
-		SimpleBlockingQueue<Double> simpleBlockingQueue = new SimpleBlockingQueue<>();
+		SimpleBlockingQueue<Double> simpleBlockingQueue = new SimpleBlockingQueue<>(1000);
 		List<Thread> threadList = new ArrayList<>();
 		for (int i = 0; i < 10000; i++) {
-			threadList.add(new Thread(() -> simpleBlockingQueue.offer(Math.random())));
+			threadList.add(new Thread(() -> {
+				try {
+					simpleBlockingQueue.offer(Math.random());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}));
 			threadList.add(new Thread(() -> {
 				try {
 					simpleBlockingQueue.poll();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					Thread.currentThread().interrupt();
 				}
 			}));
 		}
@@ -49,13 +64,20 @@ class SimpleBlockingQueueTest {
 	@Test
 	void test() throws InterruptedException {
 		final CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
-		final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
+		final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(2);
 		List<Integer> list = new ArrayList<>();
 		for (int i = 0; i < 10000; i++) {
 			list.add(i);
 		}
 		Thread producer = new Thread(() -> {
-			IntStream.range(0, 10000).forEach(queue::offer);
+			for (int i = 0; i < 10000; i++) {
+				try {
+					queue.offer(i);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}
 		});
 		producer.start();
 		Thread consumer = new Thread(() -> {

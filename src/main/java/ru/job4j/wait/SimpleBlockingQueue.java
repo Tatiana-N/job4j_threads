@@ -8,26 +8,32 @@ import java.util.Queue;
 
 @ThreadSafe
 public class SimpleBlockingQueue<T> {
-	private int size = 0;
+	private final int size;
 	@GuardedBy("this")
 	private final Queue<T> queue = new LinkedList<>();
 	
-	public synchronized void offer(T value) {
+	public SimpleBlockingQueue(int size) {
+		this.size = size;
+	}
+	
+	public synchronized void offer(T value) throws InterruptedException {
+		while (queue.size() == size) {
+				wait();
+		}
 		queue.add(value);
-		size++;
 		notifyAll();
 	}
 	
 	public synchronized T poll() throws InterruptedException {
-		while (size == 0) {
+		while (queue.size() == 0) {
 			wait();
-			notifyAll();
 		}
-		size--;
-		return queue.poll();
+		T poll = queue.poll();
+		notifyAll();
+		return poll;
 	}
 	
 	public synchronized boolean isEmpty() {
-		return size == 0;
+		return queue.size() == 0;
 	}
 }
