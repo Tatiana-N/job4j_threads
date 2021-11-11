@@ -18,14 +18,12 @@ public class Cache {
 		if (base.getVersion() != model.getVersion()) {
 			throw new OptimisticException("разные версии не обновляем");
 		}
-		memory.put(model.getId(), new Base(model.getId(), model.getVersion() + 1));
-		return true;
+		Base newBase = new Base(model.getId(), model.getVersion() + 1);
+		newBase.setName(model.getName());
+		return memory.computeIfPresent(model.getId(), (k, v) -> v.getVersion() == model.getVersion() ? newBase : v) == newBase;
 	}
 	
 	public void delete(Base model) {
-		if (memory.get(model.getId()).getVersion() != model.getVersion()) {
-			throw new OptimisticException("разные версии не удаляем");
-		}
 		memory.remove(model.getId());
 	}
 }

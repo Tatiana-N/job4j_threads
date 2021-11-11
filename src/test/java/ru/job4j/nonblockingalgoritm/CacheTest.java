@@ -40,16 +40,4 @@ class CacheTest {
 		user2.setName("User 1");
 		Assertions.assertThrows(OptimisticException.class, () -> cache.update(user2), "нет в кеше");
 	}
-	
-	@Test
-	public void failDelete() {
-		Cache cache = new Cache();
-		Base base = new Base(1, 0);
-		cache.add(base);
-		Base base1 = new Base(1, 1);
-		Assertions.assertThrows(OptimisticException.class, () -> cache.delete(base1), "разные версии не удаляем");
-		Base user2 = new Base(1, 0);
-		user2.setName("User 1");
-		Assertions.assertTrue(cache.update(user2));
-	}
 }
