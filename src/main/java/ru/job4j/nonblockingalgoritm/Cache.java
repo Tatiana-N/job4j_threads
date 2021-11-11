@@ -11,16 +11,14 @@ public class Cache {
 	}
 	
 	public boolean update(Base model) {
-		Base base = memory.get(model.getId());
-		if (base == null) {
-			throw new OptimisticException("нет в кеше");
-		}
-		if (base.getVersion() != model.getVersion()) {
-			throw new OptimisticException("разные версии не обновляем");
-		}
-		Base newBase = new Base(model.getId(), model.getVersion() + 1);
-		newBase.setName(model.getName());
-		return memory.computeIfPresent(model.getId(), (k, v) -> v.getVersion() == model.getVersion() ? newBase : v) == newBase;
+		return memory.computeIfPresent(model.getId(), (k, v) -> {
+			if (v.getVersion() != model.getVersion()) {
+				throw new OptimisticException("разные версии не обновляем");
+			}
+				Base base = new Base(model.getId(), model.getVersion() + 1);
+				base.setName(model.getName());
+				return base;
+		}) != null;
 	}
 	
 	public void delete(Base model) {

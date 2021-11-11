@@ -35,9 +35,8 @@ class CacheTest {
 		Cache cache = new Cache();
 		Base base = new Base(1, 0);
 		cache.add(base);
+		Assertions.assertFalse(cache.add(base));
 		cache.delete(base);
-		Base user2 = new Base(1, 0);
-		user2.setName("User 1");
-		Assertions.assertThrows(OptimisticException.class, () -> cache.update(user2), "нет в кеше");
+		Assertions.assertTrue(cache.add(base));
 	}
 }
