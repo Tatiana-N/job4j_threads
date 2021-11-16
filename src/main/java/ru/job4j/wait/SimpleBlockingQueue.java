@@ -15,6 +15,9 @@ public class SimpleBlockingQueue<T> {
 	public SimpleBlockingQueue(int size) {
 		this.size = size;
 	}
+	public SimpleBlockingQueue() {
+		this.size = -1;
+	}
 	
 	public synchronized void offer(T value) throws InterruptedException {
 		while (queue.size() == size) {
