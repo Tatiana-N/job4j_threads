@@ -40,12 +40,17 @@ public class ThreadPool {
 
   public static void main(String[] args) throws InterruptedException {
     ThreadPool threadPool = new ThreadPool();
-    threadPool.work(() -> System.out.println("task1"));
-    threadPool.work(() -> System.out.println("task2"));
-    Thread.sleep(2000);
-    threadPool.work(() -> System.out.println("task3"));
-    Thread.sleep(1000);
-    threadPool.work(() -> System.out.println("task4"));
+    for (int i = 0; i < 20; i++) {
+      int finalI = i;
+      threadPool.work(() -> {
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        System.out.println("task" + finalI);
+      });
+    }
     threadPool.shoutDown();
   }
 }
