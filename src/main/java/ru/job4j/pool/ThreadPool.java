@@ -8,13 +8,14 @@ import java.util.List;
 public class ThreadPool {
 	private final List<Thread> threads = new LinkedList<>();
 	private final SimpleBlockingQueue<Runnable> tasks;
+	private volatile boolean isAlive = true;
 
 	public ThreadPool() {
 		int size = Runtime.getRuntime().availableProcessors();
 		 tasks= new SimpleBlockingQueue<>(size);
 		for (int i = 0; i < size; i++) {
 			threads.add(new Thread(() -> {
-				while (!Thread.currentThread().isInterrupted()) {
+				while (isAlive) {
 					try {
 						tasks.poll().run();
 					} catch (InterruptedException e) {
@@ -36,6 +37,7 @@ public class ThreadPool {
 
 	public void shoutDown() {
 		threads.forEach(Thread::interrupt);
+		isAlive = false;
 	}
 
 	public static void main(String[] args) throws InterruptedException {
