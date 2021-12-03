@@ -10,24 +10,16 @@ public class QueueService implements Service {
 	
 	@Override
 	public Response process(Request request) {
-		String status = "203";
 		ConcurrentLinkedQueue<String> strings = new ConcurrentLinkedQueue<>();
+		ConcurrentLinkedQueue<String> result = topics.putIfAbsent(request.getSourceName(), strings);
 		if (request.getParam() != null) {
 			strings.add(request.getParam());
 		}
-		switch (request.httpRequestType()) {
-			case "POST":
-				Optional.ofNullable(topics.putIfAbsent(request.getSourceName(), strings)).ifPresent(queue -> queue.add(request.getParam()));
-				break;
-			case "GET":
-				ConcurrentLinkedQueue<String> result = topics.putIfAbsent(request.getSourceName(), strings);
-				if (result != null && !result.isEmpty()) {
-					status = "200";
-				}
-				return result != null ? new Response(result.isEmpty() ? "" : result.poll(), status) : new Response("", status);
-			default:
-				throw new IllegalArgumentException();
+		if ("POST".equals(request.httpRequestType())) {
+			Optional.ofNullable(result).ifPresent(res -> res.add(request.getParam()));
 		}
-		return new Response("", status);
+		return result != null && !result.isEmpty()
+				? new Response(result.poll(), "200")
+				: new Response("", result != null ? "203" : "200");
 	}
 }
