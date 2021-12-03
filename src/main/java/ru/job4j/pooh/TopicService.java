@@ -16,20 +16,24 @@ public class TopicService implements Service {
 		
 		switch (request.httpRequestType()) {
 			case "GET":
-				ConcurrentLinkedQueue<String>	queue = subscribers != null ? subscribers.putIfAbsent(request.getParam(), new ConcurrentLinkedQueue<>()) : null;
-				response =
-						queue == null
-						? new Response("", "200")
-						: queue.isEmpty() ? new Response("", "203")
-						: new Response(queue.poll(), "200");
+				ConcurrentLinkedQueue<String> queue = subscribers != null ? subscribers.putIfAbsent(request.getParam(), new ConcurrentLinkedQueue<>()) : null;
+				if (queue == null) {
+					response = new Response("", "200");
+				} else if (queue.isEmpty()) {
+					response = new Response("", "203");
+				} else {
+					response = new Response(queue.poll(), "200");
+				}
 				break;
-				
+			
 			case "POST":
 				if (subscribers != null) {
 					subscribers.values().forEach(que -> que.add(request.getParam()));
 					response = new Response("", "200");
-					break;
+				} else {
+					response = new Response("", "203");
 				}
+				break;
 			default:
 				response = new Response("", "203");
 		}
